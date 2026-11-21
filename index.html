@@ -82,6 +82,15 @@
 
         <div class="relative z-10 max-w-3xl w-full my-auto animate-welcome">
             <div class="glass-card rounded-3xl p-6 sm:p-9 shadow-2xl border border-slate-700/60">
+                <!-- Верхняя панель переключателя языков на экране входа -->
+                <div class="flex justify-end mb-2">
+                    <div class="inline-flex items-center bg-slate-900/90 border border-slate-800 rounded-xl p-1 gap-1" data-lang-switcher>
+                        <button type="button" onclick="setLanguage('ru')" data-lang-btn="ru" class="px-2.5 py-1 rounded-lg text-xs font-bold transition">RU</button>
+                        <button type="button" onclick="setLanguage('uz')" data-lang-btn="uz" class="px-2.5 py-1 rounded-lg text-xs font-bold transition">UZ</button>
+                        <button type="button" onclick="setLanguage('en')" data-lang-btn="en" class="px-2.5 py-1 rounded-lg text-xs font-bold transition">EN</button>
+                    </div>
+                </div>
+
                 <!-- Шапка экрана авторизации -->
                 <div class="flex flex-col items-center text-center">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/25 border border-emerald-400/30 mb-4">
@@ -96,8 +105,8 @@
                     <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
                         UAI <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Workspace</span>
                     </h1>
-                    <p class="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-                        Создай аккаунт или войди, чтобы сохранять свои оценки <span class="text-white font-medium">eMaktab</span>, считать <span class="text-emerald-400 font-semibold">US GPA 4.0</span> и отслеживать цель на годовую пятёрку (86+).
+                    <p id="auth-subtitle" class="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+                        Создай аккаунт или войди, чтобы сохранять свои оценки eMaktab, считать US GPA 4.0 и отслеживать цель на годовую пятёрку (86+).
                     </p>
                 </div>
 
@@ -118,12 +127,12 @@
                 <form id="register-form" onsubmit="handleRegister(event)" class="mt-6 space-y-4 max-w-xl mx-auto">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-xs text-slate-300 mb-1 font-medium">Имя *</label>
+                            <label id="lbl-reg-name" class="block text-xs text-slate-300 mb-1 font-medium">Имя *</label>
                             <input id="reg-name" type="text" required placeholder="Например: Хондамир"
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-300 mb-1 font-medium">Логин или Email *</label>
+                            <label id="lbl-reg-login" class="block text-xs text-slate-300 mb-1 font-medium">Логин или Email *</label>
                             <input id="reg-login" type="text" required placeholder="Например: hondamir_9d"
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                         </div>
@@ -131,12 +140,12 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-xs text-slate-300 mb-1 font-medium">Класс</label>
+                            <label id="lbl-reg-grade" class="block text-xs text-slate-300 mb-1 font-medium">Класс</label>
                             <input id="reg-grade" type="text" placeholder="Например: 9 класс"
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-300 mb-1 font-medium">Главная цель</label>
+                            <label id="lbl-reg-goal" class="block text-xs text-slate-300 mb-1 font-medium">Главная цель</label>
                             <input id="reg-goal" type="text" placeholder="Harvard / MIT 4.0 GPA"
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                         </div>
@@ -144,18 +153,18 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-xs text-slate-300 mb-1 font-medium">Пароль * (от 4 символов)</label>
+                            <label id="lbl-reg-pass" class="block text-xs text-slate-300 mb-1 font-medium">Пароль * (от 4 символов)</label>
                             <input id="reg-password" type="password" required minlength="4" placeholder="••••••••"
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-300 mb-1 font-medium">Повтори пароль *</label>
+                            <label id="lbl-reg-pass-confirm" class="block text-xs text-slate-300 mb-1 font-medium">Повтори пароль *</label>
                             <input id="reg-password-confirm" type="password" required minlength="4" placeholder="••••••••"
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-500/25 transition">
+                    <button id="btn-reg-submit" type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-500/25 transition">
                         Создать аккаунт и войти в UAI
                     </button>
                 </form>
@@ -163,26 +172,26 @@
                 <!-- Форма входа -->
                 <form id="login-form" onsubmit="handleLogin(event)" class="hidden mt-6 space-y-4 max-w-xl mx-auto">
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1 font-medium">Логин или Email</label>
+                        <label id="lbl-login-id" class="block text-xs text-slate-300 mb-1 font-medium">Логин или Email</label>
                         <input id="login-identifier" type="text" required placeholder="Введи логин или email"
                             class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                     </div>
 
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1 font-medium">Пароль</label>
+                        <label id="lbl-login-pass" class="block text-xs text-slate-300 mb-1 font-medium">Пароль</label>
                         <input id="login-password" type="password" required placeholder="••••••••"
                             class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-500/25 transition">
+                    <button id="btn-login-submit" type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-500/25 transition">
                         Войти в аккаунт
                     </button>
                 </form>
 
                 <!-- Быстрый гостевой вход для теста -->
                 <div class="mt-5 pt-4 border-t border-slate-800/80 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
-                    <span>Хочешь сначала глянуть интерфейс без регистрации?</span>
-                    <button type="button" onclick="continueAsGuest()" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4 transition">
+                    <span id="lbl-guest-hint">Хочешь сначала глянуть интерфейс без регистрации?</span>
+                    <button id="btn-guest-enter" type="button" onclick="continueAsGuest()" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4 transition">
                         Войти как гость
                     </button>
                 </div>
@@ -201,13 +210,13 @@
     <!-- Модальное окно подтверждения сброса -->
     <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 class="text-lg font-bold text-white mb-2">Сбросить оценки к примеру?</h3>
-            <p class="text-slate-400 text-sm mb-6">Все ваши текущие изменения будут заменены на стандартный набор предметов 9-го класса.</p>
+            <h3 id="modal-reset-title" class="text-lg font-bold text-white mb-2">Сбросить оценки к примеру?</h3>
+            <p id="modal-reset-desc" class="text-slate-400 text-sm mb-6">Все ваши текущие изменения будут заменены на стандартный набор предметов 9-го класса.</p>
             <div class="flex justify-end gap-3">
-                <button onclick="closeConfirmModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition">
+                <button id="btn-modal-cancel" onclick="closeConfirmModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition">
                     Отмена
                 </button>
-                <button onclick="confirmReset()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition">
+                <button id="btn-modal-confirm" onclick="confirmReset()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition">
                     Да, сбросить
                 </button>
             </div>
@@ -216,7 +225,7 @@
 
     <!-- Шапка приложения -->
     <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
                 <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0 border border-emerald-400/20">
                     <span class="text-white font-extrabold text-sm tracking-tighter">UAI</span>
@@ -235,21 +244,28 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
-                <button onclick="openAuthModal()" class="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-[0.98] text-emerald-400 text-xs sm:text-sm font-medium border border-slate-700/70 transition flex items-center gap-1.5">
-                    <span>Аккаунт</span>
+                <!-- Переключатель языков RU / UZ / EN -->
+                <div class="inline-flex items-center bg-slate-950/90 border border-slate-700/80 rounded-xl p-1 gap-1" data-lang-switcher>
+                    <button type="button" onclick="setLanguage('ru')" data-lang-btn="ru" class="px-2.5 py-1 rounded-lg text-xs font-bold transition">RU</button>
+                    <button type="button" onclick="setLanguage('uz')" data-lang-btn="uz" class="px-2.5 py-1 rounded-lg text-xs font-bold transition">UZ</button>
+                    <button type="button" onclick="setLanguage('en')" data-lang-btn="en" class="px-2.5 py-1 rounded-lg text-xs font-bold transition">EN</button>
+                </div>
+
+                <button id="btn-header-account" onclick="openAuthModal()" class="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-[0.98] text-emerald-400 text-xs sm:text-sm font-medium border border-slate-700/70 transition flex items-center gap-1.5">
+                    Аккаунт
                 </button>
                 <button onclick="addSubject()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs sm:text-sm font-medium transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Добавить предмет
+                    <span id="btn-add-subject">Добавить предмет</span>
                 </button>
-                <button onclick="openConfirmModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-300 text-xs sm:text-sm font-medium border border-slate-700/70 transition">
+                <button id="btn-reset-demo" onclick="openConfirmModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-300 text-xs sm:text-sm font-medium border border-slate-700/70 transition">
                     Сбросить к примеру
                 </button>
                 <button onclick="manualSave()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-300 text-xs sm:text-sm font-medium border border-slate-700/70 transition flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                    Сохранить
+                    <span id="btn-save-data">Сохранить</span>
                 </button>
-                <button onclick="logoutUser()" title="Выйти из аккаунта" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-rose-500/15 text-slate-400 hover:text-rose-400 text-xs sm:text-sm font-medium border border-slate-800 hover:border-rose-500/30 transition">
+                <button id="btn-logout" onclick="logoutUser()" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-rose-500/15 text-slate-400 hover:text-rose-400 text-xs sm:text-sm font-medium border border-slate-800 hover:border-rose-500/30 transition">
                     Выйти
                 </button>
             </div>
@@ -264,7 +280,7 @@
             <div class="glass-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
                 <div class="flex items-start justify-between">
                     <div>
-                        <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Прогноз US GPA (4.0)</p>
+                        <p id="card-gpa-title" class="text-xs font-medium uppercase tracking-wider text-slate-400">Прогноз US GPA (4.0)</p>
                         <div class="mt-2 flex items-baseline gap-2">
                             <span id="overall-gpa" class="text-4xl font-extrabold text-emerald-400">0.00</span>
                             <span class="text-sm text-slate-500 font-medium">/ 4.00</span>
@@ -282,7 +298,7 @@
             <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
                 <div class="flex items-start justify-between">
                     <div>
-                        <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Средний балл (100-балльная)</p>
+                        <p id="card-avg-title" class="text-xs font-medium uppercase tracking-wider text-slate-400">Средний балл (100-балльная)</p>
                         <div class="mt-2 flex items-baseline gap-2">
                             <span id="overall-avg-100" class="text-4xl font-extrabold text-white">0.0</span>
                             <span class="text-sm text-slate-500 font-medium">/ 100</span>
@@ -297,31 +313,31 @@
                         <div id="avg-progress-bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between text-[11px] text-slate-500 mt-1.5">
-                        <span>Порог «4»: 66</span>
-                        <span class="text-emerald-400/80 font-medium">Порог «5»: 86</span>
+                        <span id="lbl-thresh-4">Порог «4»: 66</span>
+                        <span id="lbl-thresh-5" class="text-emerald-400/80 font-medium">Порог «5»: 86</span>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
                 <div>
-                    <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Годовой прогноз по оценкам</p>
+                    <p id="card-dist-title" class="text-xs font-medium uppercase tracking-wider text-slate-400">Годовой прогноз по оценкам</p>
                     <div class="grid grid-cols-3 gap-2 mt-3">
                         <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2.5 text-center">
                             <div id="count-5" class="text-2xl font-bold text-emerald-400">0</div>
-                            <div class="text-[11px] text-emerald-300/80 font-medium">Пятёрок (86+)</div>
+                            <div id="lbl-count-5" class="text-[11px] text-emerald-300/80 font-medium">Пятёрок (86+)</div>
                         </div>
                         <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-center">
                             <div id="count-4" class="text-2xl font-bold text-amber-400">0</div>
-                            <div class="text-[11px] text-amber-300/80 font-medium">Четвёрок (66-85)</div>
+                            <div id="lbl-count-4" class="text-[11px] text-amber-300/80 font-medium">Четвёрок (66-85)</div>
                         </div>
                         <div class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-2.5 text-center">
                             <div id="count-3" class="text-2xl font-bold text-rose-400">0</div>
-                            <div class="text-[11px] text-rose-300/80 font-medium">Ниже 66</div>
+                            <div id="lbl-count-3" class="text-[11px] text-rose-300/80 font-medium">Ниже 66</div>
                         </div>
                     </div>
                 </div>
-                <p class="mt-3 text-xs text-slate-400">
+                <p id="card-dist-subtext" class="mt-3 text-xs text-slate-400">
                     Цель для Ivy League / MIT: максимум «5» (A = 4.0) в годовом табеле.
                 </p>
             </div>
@@ -335,8 +351,8 @@
                         ∑
                     </span>
                     <div>
-                        <h2 class="text-sm sm:text-base font-semibold text-white">Симулятор четверти eMaktab (Текущие + БСБ + ЧСБ)</h2>
-                        <p class="text-xs text-slate-400">Посчитай, сколько баллов выйдет за четверть по системе школ Узбекистана</p>
+                        <h2 id="sim-title" class="text-sm sm:text-base font-semibold text-white">Симулятор четверти eMaktab (Текущие + БСБ + ЧСБ)</h2>
+                        <p id="sim-subtitle" class="text-xs text-slate-400">Посчитай, сколько баллов выйдет за четверть по системе школ Узбекистана</p>
                     </div>
                 </div>
                 <svg id="sim-chevron" class="w-5 h-5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -348,33 +364,33 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-5 items-center">
                     <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-medium text-slate-300">Средний текущий (1–10)</label>
+                            <label id="sim-lbl-formative" class="text-xs font-medium text-slate-300">Средний текущий (1–10)</label>
                             <span id="sim-formative-val" class="text-sm font-bold text-indigo-400">8.5 / 10</span>
                         </div>
                         <input id="sim-formative" type="range" min="1" max="10" step="0.1" value="8.5" oninput="updateSimulator()" class="w-full accent-indigo-500 cursor-pointer">
-                        <p class="text-[11px] text-slate-500 mt-1.5">Максимум 10 баллов в четверть</p>
+                        <p id="sim-hint-formative" class="text-[11px] text-slate-500 mt-1.5">Максимум 10 баллов в четверть</p>
                     </div>
 
                     <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-medium text-slate-300">Сумма БСБ (Разделы)</label>
+                            <label id="sim-lbl-bsb" class="text-xs font-medium text-slate-300">Сумма БСБ (Разделы)</label>
                             <span id="sim-bsb-val" class="text-sm font-bold text-indigo-400">42 / 50</span>
                         </div>
                         <input id="sim-bsb" type="range" min="0" max="50" step="1" value="42" oninput="updateSimulator()" class="w-full accent-indigo-500 cursor-pointer">
-                        <p class="text-[11px] text-slate-500 mt-1.5">Суммативное оценивание за раздел (до 50 б.)</p>
+                        <p id="sim-hint-bsb" class="text-[11px] text-slate-500 mt-1.5">Суммативное оценивание за раздел (до 50 б.)</p>
                     </div>
 
                     <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-medium text-slate-300">Балл за ЧСБ (Четвертная)</label>
+                            <label id="sim-lbl-chsb" class="text-xs font-medium text-slate-300">Балл за ЧСБ (Четвертная)</label>
                             <span id="sim-chsb-val" class="text-sm font-bold text-indigo-400">35 / 40</span>
                         </div>
                         <input id="sim-chsb" type="range" min="0" max="40" step="1" value="35" oninput="updateSimulator()" class="w-full accent-indigo-500 cursor-pointer">
-                        <p class="text-[11px] text-slate-500 mt-1.5">Итоговая контрольная за четверть (до 40 б.)</p>
+                        <p id="sim-hint-chsb" class="text-[11px] text-slate-500 mt-1.5">Итоговая контрольная за четверть (до 40 б.)</p>
                     </div>
 
                     <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-700/80 flex flex-col items-center justify-center text-center">
-                        <span class="text-xs text-slate-400 uppercase tracking-wider font-medium">Итог за четверть</span>
+                        <span id="sim-lbl-total" class="text-xs text-slate-400 uppercase tracking-wider font-medium">Итог за четверть</span>
                         <div class="flex items-baseline gap-2 my-1">
                             <span id="sim-total-score" class="text-3xl font-extrabold text-emerald-400">85.5</span>
                             <span class="text-xs text-slate-500">/ 100</span>
@@ -391,13 +407,13 @@
         <section class="glass-card rounded-2xl overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                    <h2 class="text-base font-bold text-white">Предметы и расчёт годовой оценки</h2>
-                    <p class="text-xs text-slate-400">Вводите баллы за четверти (0–100). Пустые четверти учитываются при расчёте цели на «5».</p>
+                    <h2 id="table-title" class="text-base font-bold text-white">Предметы и расчёт годовой оценки</h2>
+                    <p id="table-subtitle" class="text-xs text-slate-400">Вводите баллы за четверти (0–100). Пустые четверти учитываются при расчёте цели на «5».</p>
                 </div>
-                <div class="flex items-center gap-3 text-xs text-slate-400">
+                <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
                     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> 86–100 = 5 (4.0)</span>
                     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> 66–85 = 4 (3.0)</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> меньше 66 = 3/2</span>
+                    <span id="legend-low" class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> ниже 66 = 3/2</span>
                 </div>
             </div>
 
@@ -405,14 +421,14 @@
                 <table class="w-full text-left border-collapse min-w-[780px]">
                     <thead>
                         <tr class="border-b border-slate-800 bg-slate-900/50 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                            <th class="py-3.5 px-4 w-56">Предмет</th>
-                            <th class="py-3.5 px-2 text-center w-20">1 чтв</th>
-                            <th class="py-3.5 px-2 text-center w-20">2 чтв</th>
-                            <th class="py-3.5 px-2 text-center w-20">3 чтв</th>
-                            <th class="py-3.5 px-2 text-center w-20">4 чтв</th>
-                            <th class="py-3.5 px-3 text-center w-28">Год (прогноз)</th>
-                            <th class="py-3.5 px-3 text-center w-28">Узб / US GPA</th>
-                            <th class="py-3.5 px-4">Советник: цель на «5» (86+)</th>
+                            <th id="th-subject" class="py-3.5 px-4 w-56">Предмет</th>
+                            <th id="th-q1" class="py-3.5 px-2 text-center w-20">1 чтв</th>
+                            <th id="th-q2" class="py-3.5 px-2 text-center w-20">2 чтв</th>
+                            <th id="th-q3" class="py-3.5 px-2 text-center w-20">3 чтв</th>
+                            <th id="th-q4" class="py-3.5 px-2 text-center w-20">4 чтв</th>
+                            <th id="th-year" class="py-3.5 px-3 text-center w-28">Год (прогноз)</th>
+                            <th id="th-gpa" class="py-3.5 px-3 text-center w-28">Узб / US GPA</th>
+                            <th id="th-advisor" class="py-3.5 px-4">Советник: цель на «5» (86+)</th>
                             <th class="py-3.5 px-3 text-center w-12"></th>
                         </tr>
                     </thead>
@@ -425,10 +441,10 @@
         <section class="glass-card rounded-2xl p-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
                 <div>
-                    <h2 class="text-base font-bold text-white">Визуальный прогресс по предметам</h2>
-                    <p class="text-xs text-slate-400">Пунктирная линия — порог пятёрки (86 баллов) для максимального GPA 4.0</p>
+                    <h2 id="chart-title" class="text-base font-bold text-white">Визуальный прогресс по предметам</h2>
+                    <p id="chart-subtitle" class="text-xs text-slate-400">Пунктирная линия — порог пятёрки (86 баллов) для максимального GPA 4.0</p>
                 </div>
-                <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg self-start sm:self-auto">
+                <span id="chart-goal-badge" class="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg self-start sm:self-auto">
                     Цель: 86+ баллов
                 </span>
             </div>
@@ -442,41 +458,463 @@
     <footer class="border-t border-slate-800/80 py-6 px-4 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
             <p class="font-semibold text-slate-300">UAI <span class="text-slate-600 mx-1">—</span> <span class="text-emerald-400">from Doniyorov tech</span></p>
-            <p>Создано для школьников Узбекистана, поступающих в топовые университеты мира</p>
+            <p id="footer-tagline">Создано для школьников Узбекистана, поступающих в топовые университеты мира</p>
         </div>
     </footer>
 
     <script>
-        const DEFAULT_SUBJECTS = [
-            { id: 1, name: 'Алгебра', q1: 82, q2: 90, q3: null, q4: null },
-            { id: 2, name: 'Геометрия', q1: 88, q2: 90, q3: null, q4: null },
-            { id: 3, name: 'Физика', q1: 86, q2: 88, q3: null, q4: null },
-            { id: 4, name: 'Информатика', q1: 75, q2: 88, q3: null, q4: null },
-            { id: 5, name: 'Английский язык', q1: 47, q2: 85, q3: null, q4: null },
-            { id: 6, name: 'Химия', q1: 75, q2: 92, q3: null, q4: null },
-            { id: 7, name: 'Биология', q1: 65, q2: 78, q3: null, q4: null },
-            { id: 8, name: 'История Узбекистана', q1: 69, q2: 82, q3: null, q4: null },
-            { id: 9, name: 'Всемирная история', q1: 72, q2: 80, q3: null, q4: null },
-            { id: 10, name: 'География', q1: 77, q2: 85, q3: null, q4: null },
-            { id: 11, name: 'Русский язык', q1: 65, q2: 90, q3: null, q4: null },
-            { id: 12, name: 'Литература', q1: 64, q2: 86, q3: null, q4: null },
-            { id: 13, name: 'Узбекский язык', q1: 67, q2: 88, q3: null, q4: null },
-            { id: 14, name: 'Физкультура', q1: 95, q2: 95, q3: null, q4: null }
-        ];
+        const TRANSLATIONS = {
+            ru: {
+                authSubtitle: 'Создай аккаунт или войди, чтобы сохранять свои оценки eMaktab, считать US GPA 4.0 и отслеживать цель на годовую пятёрку (86+).',
+                tabRegister: 'Регистрация',
+                tabLogin: 'Вход',
+                lblRegName: 'Имя *',
+                phRegName: 'Например: Хондамир',
+                lblRegLogin: 'Логин или Email *',
+                phRegLogin: 'Например: hondamir_9d',
+                lblRegGrade: 'Класс',
+                phRegGrade: 'Например: 9 класс',
+                lblRegGoal: 'Главная цель',
+                phRegGoal: 'Harvard / MIT 4.0 GPA',
+                lblRegPass: 'Пароль * (от 4 символов)',
+                lblRegPassConfirm: 'Повтори пароль *',
+                btnRegSubmit: 'Создать аккаунт и войти в UAI',
+                lblLoginId: 'Логин или Email',
+                phLoginId: 'Введи логин или email',
+                lblLoginPass: 'Пароль',
+                btnLoginSubmit: 'Войти в аккаунт',
+                lblGuestHint: 'Хочешь сначала глянуть интерфейс без регистрации?',
+                btnGuestEnter: 'Войти как гость',
+                guestName: 'Гость',
+                btnHeaderAccount: 'Аккаунт',
+                btnAddSubject: 'Добавить предмет',
+                btnResetDemo: 'Сбросить к примеру',
+                btnSaveData: 'Сохранить',
+                btnLogout: 'Выйти',
+                modalResetTitle: 'Сбросить оценки к примеру?',
+                modalResetDesc: 'Все ваши текущие изменения будут заменены на стандартный набор предметов 9-го класса.',
+                btnModalCancel: 'Отмена',
+                btnModalConfirm: 'Да, сбросить',
+                cardGpaTitle: 'Прогноз US GPA (4.0)',
+                gpaSubtext: 'Рассчитано на основе прогнозируемых годовых оценок по всем предметам.',
+                cardAvgTitle: 'Средний балл (100-балльная)',
+                lblThresh4: 'Порог «4»: 66',
+                lblThresh5: 'Порог «5»: 86',
+                cardDistTitle: 'Годовой прогноз по оценкам',
+                lblCount5: 'Пятёрок (86+)',
+                lblCount4: 'Четвёрок (66-85)',
+                lblCount3: 'Ниже 66',
+                cardDistSubtext: 'Цель для Ivy League / MIT: максимум «5» (A = 4.0) в годовом табеле.',
+                simTitle: 'Симулятор четверти eMaktab (Текущие + БСБ + ЧСБ)',
+                simSubtitle: 'Посчитай, сколько баллов выйдет за четверть по системе школ Узбекистана',
+                simLblFormative: 'Средний текущий (1–10)',
+                simHintFormative: 'Максимум 10 баллов в четверть',
+                simLblBsb: 'Сумма БСБ (Разделы)',
+                simHintBsb: 'Суммативное оценивание за раздел (до 50 б.)',
+                simLblChsb: 'Балл за ЧСБ (Четвертная)',
+                simHintChsb: 'Итоговая контрольная за четверть (до 40 б.)',
+                simLblTotal: 'Итог за четверть',
+                simGrade5: 'Оценка: 5 (A • 4.0)',
+                simGrade4: 'Оценка: 4 (B • 3.0)',
+                simGradeLow: 'Ниже порога «4»',
+                tableTitle: 'Предметы и расчёт годовой оценки',
+                tableSubtitle: 'Вводите баллы за четверти (0–100). Пустые четверти учитываются при расчёте цели на «5».',
+                legendLow: 'ниже 66 = 3/2',
+                thSubject: 'Предмет',
+                thQ1: '1 чтв',
+                thQ2: '2 чтв',
+                thQ3: '3 чтв',
+                thQ4: '4 чтв',
+                thYear: 'Год (прогноз)',
+                thGpa: 'Узб / US GPA',
+                thAdvisor: 'Советник: цель на «5» (86+)',
+                chartTitle: 'Визуальный прогресс по предметам',
+                chartSubtitle: 'Пунктирная линия — порог пятёрки (86 баллов) для максимального GPA 4.0',
+                chartGoalBadge: 'Цель: 86+ баллов',
+                footerTagline: 'Создано для школьников Узбекистана, поступающих в топовые университеты мира',
+                newSubjectName: 'Новый предмет',
+                advEmpty: 'Нужно в среднем 86+ за четверть',
+                advDone5: 'Отлично! Годовая «5» достигнута',
+                advDoneLow: 'Год завершён, порог 86 не взят',
+                advGuaranteed: '«5» уже гарантирована!',
+                advNeed: (score, count) => `Нужно по ${score} в ост. (${count} чтв)`,
+                advImpossible: 'Порог 86 уже недостижим',
+                errFillRequired: 'Заполни обязательные поля: имя, логин и пароль.',
+                errPassShort: 'Пароль должен содержать минимум 4 символа.',
+                errPassMismatch: 'Пароли не совпадают. Проверь ввод.',
+                errLoginTaken: 'Такой логин уже занят. Попробуй другой или войди в существующий аккаунт.',
+                errBadCredentials: 'Неверный логин или пароль.',
+                toastCreated: (name) => `Аккаунт ${name} создан!`,
+                toastWelcome: (name) => `С возвращением, ${name}!`,
+                toastGuest: 'Вход выполнен в гостевом режиме',
+                toastLogout: 'Вы вышли из аккаунта',
+                toastSaved: 'Изменения сохранены в UAI',
+                toastSaveError: 'Не удалось сохранить данные',
+                toastReset: 'Сброшено к стандартному списку предметов',
+                toastAdded: 'Предмет добавлен',
+                toastMinOne: 'Должен остаться хотя бы один предмет',
+                toastDeleted: 'Предмет удалён'
+            },
+            uz: {
+                authSubtitle: 'eMaktab baholaringizni saqlash, US GPA 4.0 ni hisoblash va yillik "5" (86+) maqsadini kuzatish uchun akkaunt yarating yoki kiring.',
+                tabRegister: "Ro'yxatdan o'tish",
+                tabLogin: 'Kirish',
+                lblRegName: 'Ism *',
+                phRegName: 'Masalan: Xondamir',
+                lblRegLogin: 'Login yoki Email *',
+                phRegLogin: 'Masalan: xondamir_9d',
+                lblRegGrade: 'Sinf',
+                phRegGrade: 'Masalan: 9-sinf',
+                lblRegGoal: 'Asosiy maqsad',
+                phRegGoal: 'Harvard / MIT 4.0 GPA',
+                lblRegPass: 'Parol * (kamida 4 ta belgi)',
+                lblRegPassConfirm: 'Parolni tasdiqlang *',
+                btnRegSubmit: "Akkaunt yaratish va UAI ga kirish",
+                lblLoginId: 'Login yoki Email',
+                phLoginId: 'Login yoki emailni kiriting',
+                lblLoginPass: 'Parol',
+                btnLoginSubmit: 'Akkauntga kirish',
+                lblGuestHint: "Avval ro'yxatdan o'tmasdan interfeysni ko'rmoqchimisiz?",
+                btnGuestEnter: 'Mehmon sifatida kirish',
+                guestName: 'Mehmon',
+                btnHeaderAccount: 'Akkaunt',
+                btnAddSubject: "Fan qo'shish",
+                btnResetDemo: 'Namunaga qaytarish',
+                btnSaveData: 'Saqlash',
+                btnLogout: 'Chiqish',
+                modalResetTitle: 'Baholarni namunaga qaytarasizmi?',
+                modalResetDesc: "Barcha joriy o'zgarishlaringiz 9-sinf standart fanlar ro'yxati bilan almashtiriladi.",
+                btnModalCancel: 'Bekor qilish',
+                btnModalConfirm: 'Ha, qaytarish',
+                cardGpaTitle: 'US GPA prognozi (4.0)',
+                gpaSubtext: "Barcha fanlar bo'yicha kutilayotgan yillik baholar asosida hisoblangan.",
+                cardAvgTitle: "O'rtacha ball (100 ballik)",
+                lblThresh4: '"4" chegarasi: 66',
+                lblThresh5: '"5" chegarasi: 86',
+                cardDistTitle: "Baholar bo'yicha yillik prognoz",
+                lblCount5: 'Beshlar (86+)',
+                lblCount4: "To'rtlar (66-85)",
+                lblCount3: '66 dan past',
+                cardDistSubtext: 'Ivy League / MIT maqsadi: yillik tabelda maksimal "5" (A = 4.0).',
+                simTitle: 'eMaktab chorak simulyatori (Joriy + BSB + CHSB)',
+                simSubtitle: "O'zbekiston maktab tizimi bo'yicha chorakda necha ball chiqishini hisoblang",
+                simLblFormative: "O'rtacha joriy baho (1–10)",
+                simHintFormative: 'Chorakda maksimal 10 ball',
+                simLblBsb: "BSB yig'indisi (Bo'limlar)",
+                simHintBsb: "Bo'lim bo'yicha summativ baholash (50 ballgacha)",
+                simLblChsb: 'CHSB bali (Choraklik)',
+                simHintChsb: 'Choraklik yakuniy nazorat (40 ballgacha)',
+                simLblTotal: 'Chorak yakuni',
+                simGrade5: 'Baho: 5 (A • 4.0)',
+                simGrade4: 'Baho: 4 (B • 3.0)',
+                simGradeLow: '"4" chegarasidan past',
+                tableTitle: 'Fanlar va yillik baho hisobi',
+                tableSubtitle: 'Chorak ballarini kiriting (0–100). Bo‘sh choraklar "5" maqsadini hisoblashda inobatga olinadi.',
+                legendLow: '66 dan past = 3/2',
+                thSubject: 'Fan nomi',
+                thQ1: '1-ch',
+                thQ2: '2-ch',
+                thQ3: '3-ch',
+                thQ4: '4-ch',
+                thYear: 'Yillik (prognoz)',
+                thGpa: "O'zb / US GPA",
+                thAdvisor: 'Maslahatchi: "5" (86+) maqsadi',
+                chartTitle: "Fanlar bo'yicha vizual natijalar",
+                chartSubtitle: 'Uzuk chiziq — maksimal GPA 4.0 uchun "5" baho chegarasi (86 ball)',
+                chartGoalBadge: 'Maqsad: 86+ ball',
+                footerTagline: "Dunyoning top universitetlariga topshirayotgan O'zbekiston o'quvchilari uchun yaratilgan",
+                newSubjectName: 'Yangi fan',
+                advEmpty: "Chorakda o'rtacha 86+ ball kerak",
+                advDone5: 'Ajoyib! Yillik "5" ga erishildi',
+                advDoneLow: 'Yil yakunlandi, 86 chegarasi olinmadi',
+                advGuaranteed: '"5" baho allaqachon kafolatlangan!',
+                advNeed: (score, count) => `Qolgan ${count} chorakda ${score} dan kerak`,
+                advImpossible: '86 chegarasiga yetish imkonsiz',
+                errFillRequired: 'Majburiy maydonlarni to‘ldiring: ism, login va parol.',
+                errPassShort: 'Parol kamida 4 ta belgidan iborat bo‘lishi kerak.',
+                errPassMismatch: 'Parollar mos kelmadi. Qayta tekshiring.',
+                errLoginTaken: 'Bu login band. Boshqasini tanlang yoki mavjud akkauntga kiring.',
+                errBadCredentials: 'Login yoki parol noto‘g‘ri.',
+                toastCreated: (name) => `${name} akkaunti yaratildi!`,
+                toastWelcome: (name) => `Xush kelibsiz, ${name}!`,
+                toastGuest: 'Mehmon rejimida kirildi',
+                toastLogout: 'Akkauntdan chiqdingiz',
+                toastSaved: "O'zgarishlar UAI ga saqlandi",
+                toastSaveError: "Ma'lumotlarni saqlab bo'lmadi",
+                toastReset: "Standart fanlar ro'yxatiga qaytarildi",
+                toastAdded: "Fan qo'shildi",
+                toastMinOne: 'Kamida bitta fan qolishi kerak',
+                toastDeleted: "Fan o'chirildi"
+            },
+            en: {
+                authSubtitle: 'Create an account or sign in to save your eMaktab grades, calculate your US GPA (4.0), and track your annual A (86+) goal.',
+                tabRegister: 'Sign Up',
+                tabLogin: 'Log In',
+                lblRegName: 'First Name *',
+                phRegName: 'e.g. Khondamir',
+                lblRegLogin: 'Username or Email *',
+                phRegLogin: 'e.g. khondamir_9d',
+                lblRegGrade: 'Grade',
+                phRegGrade: 'e.g. 9th Grade',
+                lblRegGoal: 'Main Goal',
+                phRegGoal: 'Harvard / MIT 4.0 GPA',
+                lblRegPass: 'Password * (min 4 chars)',
+                lblRegPassConfirm: 'Confirm Password *',
+                btnRegSubmit: 'Create Account & Enter UAI',
+                lblLoginId: 'Username or Email',
+                phLoginId: 'Enter username or email',
+                lblLoginPass: 'Password',
+                btnLoginSubmit: 'Log In',
+                lblGuestHint: 'Want to explore the workspace first without signing up?',
+                btnGuestEnter: 'Continue as Guest',
+                guestName: 'Guest',
+                btnHeaderAccount: 'Account',
+                btnAddSubject: 'Add Subject',
+                btnResetDemo: 'Reset to Demo',
+                btnSaveData: 'Save',
+                btnLogout: 'Log Out',
+                modalResetTitle: 'Reset grades to demo?',
+                modalResetDesc: 'All your current edits will be replaced with the default 9th-grade subject list.',
+                btnModalCancel: 'Cancel',
+                btnModalConfirm: 'Yes, reset',
+                cardGpaTitle: 'Projected US GPA (4.0)',
+                gpaSubtext: 'Calculated from projected annual grades across all active subjects.',
+                cardAvgTitle: 'Average Score (100-point)',
+                lblThresh4: 'Grade "4" cutoff: 66',
+                lblThresh5: 'Grade "5" cutoff: 86',
+                cardDistTitle: 'Annual Grade Breakdown',
+                lblCount5: 'A / 5s (86+)',
+                lblCount4: 'B / 4s (66-85)',
+                lblCount3: 'Below 66',
+                cardDistSubtext: 'Ivy League / MIT target: maximize A (5 = 4.0) marks on your final transcript.',
+                simTitle: 'eMaktab Quarter Simulator (Formative + BSB + CHSB)',
+                simSubtitle: 'Simulate your quarter score under the Uzbekistan school grading formula',
+                simLblFormative: 'Avg Formative Score (1–10)',
+                simHintFormative: 'Max 10 points per quarter',
+                simLblBsb: 'BSB Total (Unit Tests)',
+                simHintBsb: 'Summative unit assessments (up to 50 pts)',
+                simLblChsb: 'CHSB Score (Quarter Exam)',
+                simHintChsb: 'Final quarter exam (up to 40 pts)',
+                simLblTotal: 'Quarter Total',
+                simGrade5: 'Grade: 5 (A • 4.0)',
+                simGrade4: 'Grade: 4 (B • 3.0)',
+                simGradeLow: 'Below Grade 4 cutoff',
+                tableTitle: 'Subjects & Annual Grade Calculator',
+                tableSubtitle: 'Enter quarter scores (0–100). Empty quarters are factored into your A (86+) target.',
+                legendLow: 'below 66 = 3/2',
+                thSubject: 'Subject',
+                thQ1: 'Q1',
+                thQ2: 'Q2',
+                thQ3: 'Q3',
+                thQ4: 'Q4',
+                thYear: 'Annual (Est.)',
+                thGpa: 'UZ / US GPA',
+                thAdvisor: 'Advisor: Target A (86+)',
+                chartTitle: 'Subject Progress Chart',
+                chartSubtitle: 'Dashed line marks the 86-point threshold required for a 4.0 GPA',
+                chartGoalBadge: 'Target: 86+ pts',
+                footerTagline: 'Built for students in Uzbekistan aiming for top global universities',
+                newSubjectName: 'New Subject',
+                advEmpty: 'Need 86+ average per quarter',
+                advDone5: 'Awesome! Annual A (5) achieved',
+                advDoneLow: 'Year complete, 86 cutoff missed',
+                advGuaranteed: 'Annual A (5) already locked in!',
+                advNeed: (score, count) => `Need ${score} avg in left (${count} Q)`,
+                advImpossible: '86 cutoff is out of reach',
+                errFillRequired: 'Please fill in all required fields: name, username, and password.',
+                errPassShort: 'Password must be at least 4 characters long.',
+                errPassMismatch: 'Passwords do not match. Please check again.',
+                errLoginTaken: 'This username is already taken. Try another or log in.',
+                errBadCredentials: 'Invalid username or password.',
+                toastCreated: (name) => `Account ${name} created!`,
+                toastWelcome: (name) => `Welcome back, ${name}!`,
+                toastGuest: 'Entered in guest mode',
+                toastLogout: 'Logged out',
+                toastSaved: 'Changes saved to UAI',
+                toastSaveError: 'Failed to save data',
+                toastReset: 'Reset to default subject list',
+                toastAdded: 'Subject added',
+                toastMinOne: 'At least one subject must remain',
+                toastDeleted: 'Subject deleted'
+            }
+        };
+
+        const DEFAULT_SUBJECTS_BY_LANG = {
+            ru: [
+                { id: 1, name: 'Алгебра', q1: 82, q2: 90, q3: null, q4: null },
+                { id: 2, name: 'Геометрия', q1: 88, q2: 90, q3: null, q4: null },
+                { id: 3, name: 'Физика', q1: 86, q2: 88, q3: null, q4: null },
+                { id: 4, name: 'Информатика', q1: 75, q2: 88, q3: null, q4: null },
+                { id: 5, name: 'Английский язык', q1: 47, q2: 85, q3: null, q4: null },
+                { id: 6, name: 'Химия', q1: 75, q2: 92, q3: null, q4: null },
+                { id: 7, name: 'Биология', q1: 65, q2: 78, q3: null, q4: null },
+                { id: 8, name: 'История Узбекистана', q1: 69, q2: 82, q3: null, q4: null },
+                { id: 9, name: 'Всемирная история', q1: 72, q2: 80, q3: null, q4: null },
+                { id: 10, name: 'География', q1: 77, q2: 85, q3: null, q4: null },
+                { id: 11, name: 'Русский язык', q1: 65, q2: 90, q3: null, q4: null },
+                { id: 12, name: 'Литература', q1: 64, q2: 86, q3: null, q4: null },
+                { id: 13, name: 'Узбекский язык', q1: 67, q2: 88, q3: null, q4: null },
+                { id: 14, name: 'Физкультура', q1: 95, q2: 95, q3: null, q4: null }
+            ],
+            uz: [
+                { id: 1, name: 'Algebra', q1: 82, q2: 90, q3: null, q4: null },
+                { id: 2, name: 'Geometriya', q1: 88, q2: 90, q3: null, q4: null },
+                { id: 3, name: 'Fizika', q1: 86, q2: 88, q3: null, q4: null },
+                { id: 4, name: 'Informatika', q1: 75, q2: 88, q3: null, q4: null },
+                { id: 5, name: 'Ingliz tili', q1: 47, q2: 85, q3: null, q4: null },
+                { id: 6, name: 'Kimyo', q1: 75, q2: 92, q3: null, q4: null },
+                { id: 7, name: 'Biologiya', q1: 65, q2: 78, q3: null, q4: null },
+                { id: 8, name: "O'zbekiston tarixi", q1: 69, q2: 82, q3: null, q4: null },
+                { id: 9, name: 'Jahon tarixi', q1: 72, q2: 80, q3: null, q4: null },
+                { id: 10, name: 'Geografiya', q1: 77, q2: 85, q3: null, q4: null },
+                { id: 11, name: 'Rus tili', q1: 65, q2: 90, q3: null, q4: null },
+                { id: 12, name: 'Adabiyot', q1: 64, q2: 86, q3: null, q4: null },
+                { id: 13, name: 'Ona tili', q1: 67, q2: 88, q3: null, q4: null },
+                { id: 14, name: 'Jismoniy tarbiya', q1: 95, q2: 95, q3: null, q4: null }
+            ],
+            en: [
+                { id: 1, name: 'Algebra', q1: 82, q2: 90, q3: null, q4: null },
+                { id: 2, name: 'Geometry', q1: 88, q2: 90, q3: null, q4: null },
+                { id: 3, name: 'Physics', q1: 86, q2: 88, q3: null, q4: null },
+                { id: 4, name: 'Computer Science', q1: 75, q2: 88, q3: null, q4: null },
+                { id: 5, name: 'English Language', q1: 47, q2: 85, q3: null, q4: null },
+                { id: 6, name: 'Chemistry', q1: 75, q2: 92, q3: null, q4: null },
+                { id: 7, name: 'Biology', q1: 65, q2: 78, q3: null, q4: null },
+                { id: 8, name: 'History of Uzbekistan', q1: 69, q2: 82, q3: null, q4: null },
+                { id: 9, name: 'World History', q1: 72, q2: 80, q3: null, q4: null },
+                { id: 10, name: 'Geography', q1: 77, q2: 85, q3: null, q4: null },
+                { id: 11, name: 'Russian Language', q1: 65, q2: 90, q3: null, q4: null },
+                { id: 12, name: 'Literature', q1: 64, q2: 86, q3: null, q4: null },
+                { id: 13, name: 'Uzbek Language', q1: 67, q2: 88, q3: null, q4: null },
+                { id: 14, name: 'Physical Education', q1: 95, q2: 95, q3: null, q4: null }
+            ]
+        };
 
         const ACCOUNTS_KEY = 'uai_accounts_v1';
         const ACTIVE_USER_KEY = 'uai_active_user_v1';
         const GUEST_SUBJECTS_KEY = 'uai_guest_subjects_v1';
+        const LANG_KEY = 'uai_lang_v1';
 
+        let currentLang = localStorage.getItem(LANG_KEY) || 'ru';
+        if (!TRANSLATIONS[currentLang]) currentLang = 'ru';
+
+        let currentAuthMode = 'register';
         let currentUser = null;
         let subjects = [];
         let toastTimer = null;
 
+        function t(key) {
+            return TRANSLATIONS[currentLang][key] || TRANSLATIONS.ru[key] || key;
+        }
+
+        function getDefaultSubjects() {
+            const list = DEFAULT_SUBJECTS_BY_LANG[currentLang] || DEFAULT_SUBJECTS_BY_LANG.ru;
+            return list.map(s => ({ ...s }));
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             restoreSession();
+            applyLanguageUI();
             renderAll();
             updateSimulator();
         });
+
+        function setLanguage(lang) {
+            if (!TRANSLATIONS[lang]) return;
+            currentLang = lang;
+            localStorage.setItem(LANG_KEY, lang);
+            document.documentElement.lang = lang;
+
+            if (currentUser && currentUser.id === 'guest') {
+                currentUser.name = t('guestName');
+                updateHeaderProfileBadge();
+            }
+
+            applyLanguageUI();
+            renderAll();
+            updateSimulator();
+        }
+
+        function applyLanguageUI() {
+            document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+                const isSelected = btn.getAttribute('data-lang-btn') === currentLang;
+                btn.className = isSelected
+                    ? 'px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow transition'
+                    : 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition';
+            });
+
+            document.getElementById('auth-subtitle').textContent = t('authSubtitle');
+            document.getElementById('tab-register').textContent = t('tabRegister');
+            document.getElementById('tab-login').textContent = t('tabLogin');
+            document.getElementById('lbl-reg-name').textContent = t('lblRegName');
+            document.getElementById('reg-name').placeholder = t('phRegName');
+            document.getElementById('lbl-reg-login').textContent = t('lblRegLogin');
+            document.getElementById('reg-login').placeholder = t('phRegLogin');
+            document.getElementById('lbl-reg-grade').textContent = t('lblRegGrade');
+            document.getElementById('reg-grade').placeholder = t('phRegGrade');
+            document.getElementById('lbl-reg-goal').textContent = t('lblRegGoal');
+            document.getElementById('reg-goal').placeholder = t('phRegGoal');
+            document.getElementById('lbl-reg-pass').textContent = t('lblRegPass');
+            document.getElementById('lbl-reg-pass-confirm').textContent = t('lblRegPassConfirm');
+            document.getElementById('btn-reg-submit').textContent = t('btnRegSubmit');
+
+            document.getElementById('lbl-login-id').textContent = t('lblLoginId');
+            document.getElementById('login-identifier').placeholder = t('phLoginId');
+            document.getElementById('lbl-login-pass').textContent = t('lblLoginPass');
+            document.getElementById('btn-login-submit').textContent = t('btnLoginSubmit');
+
+            document.getElementById('lbl-guest-hint').textContent = t('lblGuestHint');
+            document.getElementById('btn-guest-enter').textContent = t('btnGuestEnter');
+
+            document.getElementById('btn-header-account').textContent = t('btnHeaderAccount');
+            document.getElementById('btn-add-subject').textContent = t('btnAddSubject');
+            document.getElementById('btn-reset-demo').textContent = t('btnResetDemo');
+            document.getElementById('btn-save-data').textContent = t('btnSaveData');
+            document.getElementById('btn-logout').textContent = t('btnLogout');
+
+            document.getElementById('modal-reset-title').textContent = t('modalResetTitle');
+            document.getElementById('modal-reset-desc').textContent = t('modalResetDesc');
+            document.getElementById('btn-modal-cancel').textContent = t('btnModalCancel');
+            document.getElementById('btn-modal-confirm').textContent = t('btnModalConfirm');
+
+            document.getElementById('card-gpa-title').textContent = t('cardGpaTitle');
+            document.getElementById('gpa-subtext').textContent = t('gpaSubtext');
+            document.getElementById('card-avg-title').textContent = t('cardAvgTitle');
+            document.getElementById('lbl-thresh-4').textContent = t('lblThresh4');
+            document.getElementById('lbl-thresh-5').textContent = t('lblThresh5');
+            document.getElementById('card-dist-title').textContent = t('cardDistTitle');
+            document.getElementById('lbl-count-5').textContent = t('lblCount5');
+            document.getElementById('lbl-count-4').textContent = t('lblCount4');
+            document.getElementById('lbl-count-3').textContent = t('lblCount3');
+            document.getElementById('card-dist-subtext').textContent = t('cardDistSubtext');
+
+            document.getElementById('sim-title').textContent = t('simTitle');
+            document.getElementById('sim-subtitle').textContent = t('simSubtitle');
+            document.getElementById('sim-lbl-formative').textContent = t('simLblFormative');
+            document.getElementById('sim-hint-formative').textContent = t('simHintFormative');
+            document.getElementById('sim-lbl-bsb').textContent = t('simLblBsb');
+            document.getElementById('sim-hint-bsb').textContent = t('simHintBsb');
+            document.getElementById('sim-lbl-chsb').textContent = t('simLblChsb');
+            document.getElementById('sim-hint-chsb').textContent = t('simHintChsb');
+            document.getElementById('sim-lbl-total').textContent = t('simLblTotal');
+
+            document.getElementById('table-title').textContent = t('tableTitle');
+            document.getElementById('table-subtitle').textContent = t('tableSubtitle');
+            document.getElementById('legend-low').innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> ${t('legendLow')}`;
+            document.getElementById('th-subject').textContent = t('thSubject');
+            document.getElementById('th-q1').textContent = t('thQ1');
+            document.getElementById('th-q2').textContent = t('thQ2');
+            document.getElementById('th-q3').textContent = t('thQ3');
+            document.getElementById('th-q4').textContent = t('thQ4');
+            document.getElementById('th-year').textContent = t('thYear');
+            document.getElementById('th-gpa').textContent = t('thGpa');
+            document.getElementById('th-advisor').textContent = t('thAdvisor');
+
+            document.getElementById('chart-title').textContent = t('chartTitle');
+            document.getElementById('chart-subtitle').textContent = t('chartSubtitle');
+            document.getElementById('chart-goal-badge').textContent = t('chartGoalBadge');
+            document.getElementById('footer-tagline').textContent = t('footerTagline');
+        }
 
         function getAccounts() {
             try {
@@ -508,6 +946,7 @@
         }
 
         function switchAuthTab(tab) {
+            currentAuthMode = tab;
             hideAuthAlert();
             const regTab = document.getElementById('tab-register');
             const logTab = document.getElementById('tab-login');
@@ -539,21 +978,21 @@
             const passwordConfirm = document.getElementById('reg-password-confirm').value;
 
             if (!name || !login || !password) {
-                showAuthAlert('Заполни обязательные поля: имя, логин и пароль.');
+                showAuthAlert(t('errFillRequired'));
                 return;
             }
             if (password.length < 4) {
-                showAuthAlert('Пароль должен содержать минимум 4 символа.');
+                showAuthAlert(t('errPassShort'));
                 return;
             }
             if (password !== passwordConfirm) {
-                showAuthAlert('Пароли не совпадают. Проверь ввод.');
+                showAuthAlert(t('errPassMismatch'));
                 return;
             }
 
             const accounts = getAccounts();
             if (accounts.some(acc => acc.login === login)) {
-                showAuthAlert('Такой логин уже занят. Попробуй другой или войди в существующий аккаунт.');
+                showAuthAlert(t('errLoginTaken'));
                 return;
             }
 
@@ -564,14 +1003,14 @@
                 grade,
                 goal,
                 password,
-                subjects: DEFAULT_SUBJECTS.map(s => ({ ...s }))
+                subjects: getDefaultSubjects()
             };
 
             accounts.push(newAccount);
             saveAccounts(accounts);
             activateAccount(newAccount);
             event.target.reset();
-            showToast(`Аккаунт ${name} создан!`);
+            showToast(t('toastCreated')(name));
         }
 
         function handleLogin(event) {
@@ -585,19 +1024,19 @@
             const found = accounts.find(acc => acc.login === identifier && acc.password === password);
 
             if (!found) {
-                showAuthAlert('Неверный логин или пароль.');
+                showAuthAlert(t('errBadCredentials'));
                 return;
             }
 
             activateAccount(found);
             event.target.reset();
-            showToast(`С возвращением, ${found.name}!`);
+            showToast(t('toastWelcome')(found.name));
         }
 
         function continueAsGuest() {
             currentUser = {
                 id: 'guest',
-                name: 'Гость',
+                name: t('guestName'),
                 login: 'guest',
                 grade: '',
                 goal: ''
@@ -607,7 +1046,7 @@
             updateHeaderProfileBadge();
             hideAuthScreen();
             renderAll();
-            showToast('Вход выполнен в гостевом режиме');
+            showToast(t('toastGuest'));
         }
 
         function activateAccount(account) {
@@ -632,7 +1071,7 @@
                 return;
             }
             if (activeId === 'guest') {
-                currentUser = { id: 'guest', name: 'Гость', login: 'guest', grade: '', goal: '' };
+                currentUser = { id: 'guest', name: t('guestName'), login: 'guest', grade: '', goal: '' };
                 loadSubjectsForCurrentUser();
                 updateHeaderProfileBadge();
                 document.getElementById('auth-screen').classList.add('hidden');
@@ -676,7 +1115,7 @@
             updateHeaderProfileBadge();
             switchAuthTab('login');
             openAuthModal();
-            showToast('Вы вышли из аккаунта');
+            showToast(t('toastLogout'));
         }
 
         function updateHeaderProfileBadge() {
@@ -701,7 +1140,7 @@
                             return;
                         }
                     }
-                    subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+                    subjects = getDefaultSubjects();
                     return;
                 }
 
@@ -710,10 +1149,10 @@
                 if (acc && Array.isArray(acc.subjects) && acc.subjects.length > 0) {
                     subjects = acc.subjects.map(s => ({ ...s }));
                 } else {
-                    subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+                    subjects = getDefaultSubjects();
                 }
             } catch (e) {
-                subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+                subjects = getDefaultSubjects();
             }
         }
 
@@ -729,9 +1168,9 @@
                         saveAccounts(accounts);
                     }
                 }
-                if (notify) showToast('Изменения сохранены в UAI');
+                if (notify) showToast(t('toastSaved'));
             } catch (e) {
-                if (notify) showToast('Не удалось сохранить данные', true);
+                if (notify) showToast(t('toastSaveError'), true);
             }
         }
 
@@ -770,18 +1209,18 @@
         }
 
         function confirmReset() {
-            subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+            subjects = getDefaultSubjects();
             saveSubjects(false);
             renderAll();
             closeConfirmModal();
-            showToast('Сброшено к стандартному списку предметов');
+            showToast(t('toastReset'));
         }
 
         function addSubject() {
             const nextId = subjects.length > 0 ? Math.max(...subjects.map(s => s.id)) + 1 : 1;
             subjects.push({
                 id: nextId,
-                name: 'Новый предмет',
+                name: t('newSubjectName'),
                 q1: null,
                 q2: null,
                 q3: null,
@@ -789,18 +1228,18 @@
             });
             saveSubjects(false);
             renderAll();
-            showToast('Предмет добавлен');
+            showToast(t('toastAdded'));
         }
 
         function deleteSubject(id) {
             if (subjects.length <= 1) {
-                showToast('Должен остаться хотя бы один предмет', true);
+                showToast(t('toastMinOne'), true);
                 return;
             }
             subjects = subjects.filter(s => s.id !== id);
             saveSubjects(false);
             renderAll();
-            showToast('Предмет удалён');
+            showToast(t('toastDeleted'));
         }
 
         function updateSubjectName(id, value) {
@@ -867,14 +1306,14 @@
             let advisorTone = 'text-slate-400';
 
             if (filled.length === 0) {
-                advisorText = 'Нужно в среднем 86+ за четверть';
+                advisorText = t('advEmpty');
                 advisorTone = 'text-slate-400';
             } else if (emptyCount === 0) {
                 if (forecast100 >= 86) {
-                    advisorText = 'Отлично! Годовая «5» достигнута';
+                    advisorText = t('advDone5');
                     advisorTone = 'text-emerald-400';
                 } else {
-                    advisorText = 'Год завершён, порог 86 не взят';
+                    advisorText = t('advDoneLow');
                     advisorTone = 'text-amber-400';
                 }
             } else {
@@ -882,14 +1321,14 @@
                 const neededPerRemaining = neededTotal / emptyCount;
 
                 if (neededPerRemaining <= 0) {
-                    advisorText = '«5» уже гарантирована!';
+                    advisorText = t('advGuaranteed');
                     advisorTone = 'text-emerald-400';
                 } else if (neededPerRemaining <= 100) {
                     const roundedNeeded = Math.ceil(neededPerRemaining * 10) / 10;
-                    advisorText = `Нужно по ${roundedNeeded} в ост. (${emptyCount} чтв)`;
+                    advisorText = t('advNeed')(roundedNeeded, emptyCount);
                     advisorTone = roundedNeeded > 92 ? 'text-amber-400' : 'text-teal-300';
                 } else {
-                    advisorText = 'Порог 86 уже недостижим';
+                    advisorText = t('advImpossible');
                     advisorTone = 'text-rose-400';
                 }
             }
@@ -959,7 +1398,7 @@
                         ${st.advisorText}
                     </td>
                     <td class="py-2.5 px-3 text-center">
-                        <button onclick="deleteSubject(${subj.id})" title="Удалить предмет"
+                        <button onclick="deleteSubject(${subj.id})"
                             class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition">
                             ✕
                         </button>
@@ -1040,7 +1479,7 @@
                     </div>
                     <div class="col-span-6 sm:col-span-8 relative h-5 bg-slate-900/90 rounded-lg overflow-hidden border border-slate-800">
                         <div class="${barColor} h-full rounded-lg transition-all duration-300" style="width: ${widthPct}%"></div>
-                        <div class="absolute top-0 bottom-0 border-r-2 border-dashed border-emerald-300/70" style="left: 86%" title="Порог 86"></div>
+                        <div class="absolute top-0 bottom-0 border-r-2 border-dashed border-emerald-300/70" style="left: 86%"></div>
                     </div>
                     <div class="col-span-2 sm:col-span-1 text-right font-bold text-slate-200">
                         ${st.filledCount > 0 ? val.toFixed(1) : '—'}
@@ -1074,15 +1513,15 @@
 
             if (total >= 86) {
                 totalEl.className = 'text-3xl font-extrabold text-emerald-400';
-                badgeEl.textContent = 'Оценка: 5 (A • 4.0)';
+                badgeEl.textContent = t('simGrade5');
                 badgeEl.className = 'px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25';
             } else if (total >= 66) {
                 totalEl.className = 'text-3xl font-extrabold text-amber-400';
-                badgeEl.textContent = 'Оценка: 4 (B • 3.0)';
+                badgeEl.textContent = t('simGrade4');
                 badgeEl.className = 'px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25';
             } else {
                 totalEl.className = 'text-3xl font-extrabold text-rose-400';
-                badgeEl.textContent = 'Ниже порога «4»';
+                badgeEl.textContent = t('simGradeLow');
                 badgeEl.className = 'px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/25';
             }
         }
