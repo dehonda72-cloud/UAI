@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAI — from Doniyorov tech (eMaktab → US 4.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#162032',
+                            950: '#0b1120'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.78);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-welcome {
+            animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
+
+    <!-- Экран входа и регистрации -->
+    <section id="auth-screen" class="fixed inset-0 z-40 bg-slate-950 bg-grid-pattern overflow-y-auto flex items-center justify-center p-4 sm:p-6 transition-all duration-300">
+        <div class="pointer-events-none fixed inset-0 overflow-hidden flex items-center justify-center">
+            <div class="w-[480px] h-[480px] rounded-full bg-emerald-500/10 blur-[120px]"></div>
+        </div>
+
+        <div class="relative z-10 max-w-3xl w-full my-auto animate-welcome">
+            <div class="glass-card rounded-3xl p-6 sm:p-9 shadow-2xl border border-slate-700/60">
+                <!-- Шапка экрана авторизации -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/25 border border-emerald-400/30 mb-4">
+                        <span class="text-white font-extrabold text-xl tracking-tighter">UAI</span>
+                    </div>
+
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 tracking-wide bg-emerald-500/10 border border-emerald-500/25 px-3.5 py-1 rounded-full mb-3">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        from Doniyorov tech
+                    </span>
+
+                    <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+                        UAI <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Workspace</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+                        Создай аккаунт или войди, чтобы сохранять свои оценки <span class="text-white font-medium">eMaktab</span>, считать <span class="text-emerald-400 font-semibold">US GPA 4.0</span> и отслеживать цель на годовую пятёрку (86+).
+                    </p>
+                </div>
+
+                <!-- Переключатель Вход / Регистрация -->
+                <div class="mt-6 grid grid-cols-2 gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 max-w-md mx-auto">
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition">
+                        Регистрация
+                    </button>
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition">
+                        Вход
+                    </button>
+                </div>
+
+                <!-- Сообщение об ошибке или успехе формы -->
+                <div id="auth-alert" class="hidden mt-4 max-w-xl mx-auto px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium border"></div>
+
+                <!-- Форма регистрации -->
+                <form id="register-form" onsubmit="handleRegister(event)" class="mt-6 space-y-4 max-w-xl mx-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-medium">Имя *</label>
+                            <input id="reg-name" type="text" required placeholder="Например: Хондамир"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-medium">Логин или Email *</label>
+                            <input id="reg-login" type="text" required placeholder="Например: hondamir_9d"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-medium">Класс</label>
+                            <input id="reg-grade" type="text" placeholder="Например: 9 класс"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-medium">Главная цель</label>
+                            <input id="reg-goal" type="text" placeholder="Harvard / MIT 4.0 GPA"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-medium">Пароль * (от 4 символов)</label>
+                            <input id="reg-password" type="password" required minlength="4" placeholder="••••••••"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-medium">Повтори пароль *</label>
+                            <input id="reg-password-confirm" type="password" required minlength="4" placeholder="••••••••"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-500/25 transition">
+                        Создать аккаунт и войти в UAI
+                    </button>
+                </form>
+
+                <!-- Форма входа -->
+                <form id="login-form" onsubmit="handleLogin(event)" class="hidden mt-6 space-y-4 max-w-xl mx-auto">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1 font-medium">Логин или Email</label>
+                        <input id="login-identifier" type="text" required placeholder="Введи логин или email"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1 font-medium">Пароль</label>
+                        <input id="login-password" type="password" required placeholder="••••••••"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-500/25 transition">
+                        Войти в аккаунт
+                    </button>
+                </form>
+
+                <!-- Быстрый гостевой вход для теста -->
+                <div class="mt-5 pt-4 border-t border-slate-800/80 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+                    <span>Хочешь сначала глянуть интерфейс без регистрации?</span>
+                    <button type="button" onclick="continueAsGuest()" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4 transition">
+                        Войти как гость
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Уведомление (Toast) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-800 border border-slate-700 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
+            <span id="toast-icon" class="text-emerald-400">✓</span>
+            <span id="toast-message">Данные сохранены</span>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения сброса -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-2">Сбросить оценки к примеру?</h3>
+            <p class="text-slate-400 text-sm mb-6">Все ваши текущие изменения будут заменены на стандартный набор предметов 9-го класса.</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeConfirmModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition">
+                    Отмена
+                </button>
+                <button onclick="confirmReset()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition">
+                    Да, сбросить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Шапка приложения -->
+    <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0 border border-emerald-400/20">
+                    <span class="text-white font-extrabold text-sm tracking-tighter">UAI</span>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">UAI</h1>
+                        <span class="text-xs font-semibold text-emerald-400 tracking-wide bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 rounded-full">
+                            from Doniyorov tech
+                        </span>
+                        <span id="header-profile-badge" class="hidden text-xs font-medium text-slate-300 bg-slate-800/90 border border-slate-700/80 px-2.5 py-0.5 rounded-full">
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Uzbekistan Academic Intelligence • eMaktab → US GPA (4.0)</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="openAuthModal()" class="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-[0.98] text-emerald-400 text-xs sm:text-sm font-medium border border-slate-700/70 transition flex items-center gap-1.5">
+                    <span>Аккаунт</span>
+                </button>
+                <button onclick="addSubject()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs sm:text-sm font-medium transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Добавить предмет
+                </button>
+                <button onclick="openConfirmModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-300 text-xs sm:text-sm font-medium border border-slate-700/70 transition">
+                    Сбросить к примеру
+                </button>
+                <button onclick="manualSave()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-300 text-xs sm:text-sm font-medium border border-slate-700/70 transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Сохранить
+                </button>
+                <button onclick="logoutUser()" title="Выйти из аккаунта" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-rose-500/15 text-slate-400 hover:text-rose-400 text-xs sm:text-sm font-medium border border-slate-800 hover:border-rose-500/30 transition">
+                    Выйти
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- 1. Верхние карточки аналитики -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Прогноз US GPA (4.0)</p>
+                        <div class="mt-2 flex items-baseline gap-2">
+                            <span id="overall-gpa" class="text-4xl font-extrabold text-emerald-400">0.00</span>
+                            <span class="text-sm text-slate-500 font-medium">/ 4.00</span>
+                        </div>
+                    </div>
+                    <span id="gpa-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                        Competitive
+                    </span>
+                </div>
+                <p id="gpa-subtext" class="mt-4 text-xs text-slate-400">
+                    Рассчитано на основе прогнозируемых годовых оценок по всем предметам.
+                </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Средний балл (100-балльная)</p>
+                        <div class="mt-2 flex items-baseline gap-2">
+                            <span id="overall-avg-100" class="text-4xl font-extrabold text-white">0.0</span>
+                            <span class="text-sm text-slate-500 font-medium">/ 100</span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold text-sm">
+                        %
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div id="avg-progress-bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-500 mt-1.5">
+                        <span>Порог «4»: 66</span>
+                        <span class="text-emerald-400/80 font-medium">Порог «5»: 86</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Годовой прогноз по оценкам</p>
+                    <div class="grid grid-cols-3 gap-2 mt-3">
+                        <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2.5 text-center">
+                            <div id="count-5" class="text-2xl font-bold text-emerald-400">0</div>
+                            <div class="text-[11px] text-emerald-300/80 font-medium">Пятёрок (86+)</div>
+                        </div>
+                        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-center">
+                            <div id="count-4" class="text-2xl font-bold text-amber-400">0</div>
+                            <div class="text-[11px] text-amber-300/80 font-medium">Четвёрок (66-85)</div>
+                        </div>
+                        <div class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-2.5 text-center">
+                            <div id="count-3" class="text-2xl font-bold text-rose-400">0</div>
+                            <div class="text-[11px] text-rose-300/80 font-medium">Ниже 66</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-3 text-xs text-slate-400">
+                    Цель для Ivy League / MIT: максимум «5» (A = 4.0) в годовом табеле.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. Интерактивный симулятор четверти -->
+        <section class="glass-card rounded-2xl overflow-hidden">
+            <button onclick="toggleSimulator()" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-800/40 transition">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-sm">
+                        ∑
+                    </span>
+                    <div>
+                        <h2 class="text-sm sm:text-base font-semibold text-white">Симулятор четверти eMaktab (Текущие + БСБ + ЧСБ)</h2>
+                        <p class="text-xs text-slate-400">Посчитай, сколько баллов выйдет за четверть по системе школ Узбекистана</p>
+                    </div>
+                </div>
+                <svg id="sim-chevron" class="w-5 h-5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <div id="simulator-panel" class="hidden border-t border-slate-800 p-5 bg-slate-900/40">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5 items-center">
+                    <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-medium text-slate-300">Средний текущий (1–10)</label>
+                            <span id="sim-formative-val" class="text-sm font-bold text-indigo-400">8.5 / 10</span>
+                        </div>
+                        <input id="sim-formative" type="range" min="1" max="10" step="0.1" value="8.5" oninput="updateSimulator()" class="w-full accent-indigo-500 cursor-pointer">
+                        <p class="text-[11px] text-slate-500 mt-1.5">Максимум 10 баллов в четверть</p>
+                    </div>
+
+                    <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-medium text-slate-300">Сумма БСБ (Разделы)</label>
+                            <span id="sim-bsb-val" class="text-sm font-bold text-indigo-400">42 / 50</span>
+                        </div>
+                        <input id="sim-bsb" type="range" min="0" max="50" step="1" value="42" oninput="updateSimulator()" class="w-full accent-indigo-500 cursor-pointer">
+                        <p class="text-[11px] text-slate-500 mt-1.5">Суммативное оценивание за раздел (до 50 б.)</p>
+                    </div>
+
+                    <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-medium text-slate-300">Балл за ЧСБ (Четвертная)</label>
+                            <span id="sim-chsb-val" class="text-sm font-bold text-indigo-400">35 / 40</span>
+                        </div>
+                        <input id="sim-chsb" type="range" min="0" max="40" step="1" value="35" oninput="updateSimulator()" class="w-full accent-indigo-500 cursor-pointer">
+                        <p class="text-[11px] text-slate-500 mt-1.5">Итоговая контрольная за четверть (до 40 б.)</p>
+                    </div>
+
+                    <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-700/80 flex flex-col items-center justify-center text-center">
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-medium">Итог за четверть</span>
+                        <div class="flex items-baseline gap-2 my-1">
+                            <span id="sim-total-score" class="text-3xl font-extrabold text-emerald-400">85.5</span>
+                            <span class="text-xs text-slate-500">/ 100</span>
+                        </div>
+                        <span id="sim-grade-badge" class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                            Оценка: 4 (B)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Таблица предметов -->
+        <section class="glass-card rounded-2xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-base font-bold text-white">Предметы и расчёт годовой оценки</h2>
+                    <p class="text-xs text-slate-400">Вводите баллы за четверти (0–100). Пустые четверти учитываются при расчёте цели на «5».</p>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-slate-400">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> 86–100 = 5 (4.0)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> 66–85 = 4 (3.0)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> меньше 66 = 3/2</span>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[780px]">
+                    <thead>
+                        <tr class="border-b border-slate-800 bg-slate-900/50 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                            <th class="py-3.5 px-4 w-56">Предмет</th>
+                            <th class="py-3.5 px-2 text-center w-20">1 чтв</th>
+                            <th class="py-3.5 px-2 text-center w-20">2 чтв</th>
+                            <th class="py-3.5 px-2 text-center w-20">3 чтв</th>
+                            <th class="py-3.5 px-2 text-center w-20">4 чтв</th>
+                            <th class="py-3.5 px-3 text-center w-28">Год (прогноз)</th>
+                            <th class="py-3.5 px-3 text-center w-28">Узб / US GPA</th>
+                            <th class="py-3.5 px-4">Советник: цель на «5» (86+)</th>
+                            <th class="py-3.5 px-3 text-center w-12"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjects-tbody" class="divide-y divide-slate-800/70 text-sm"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 4. Визуальный график сравнения предметов -->
+        <section class="glass-card rounded-2xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+                <div>
+                    <h2 class="text-base font-bold text-white">Визуальный прогресс по предметам</h2>
+                    <p class="text-xs text-slate-400">Пунктирная линия — порог пятёрки (86 баллов) для максимального GPA 4.0</p>
+                </div>
+                <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg self-start sm:self-auto">
+                    Цель: 86+ баллов
+                </span>
+            </div>
+
+            <div id="visual-chart" class="space-y-3"></div>
+        </section>
+
+    </main>
+
+    <!-- Футер -->
+    <footer class="border-t border-slate-800/80 py-6 px-4 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p class="font-semibold text-slate-300">UAI <span class="text-slate-600 mx-1">—</span> <span class="text-emerald-400">from Doniyorov tech</span></p>
+            <p>Создано для школьников Узбекистана, поступающих в топовые университеты мира</p>
+        </div>
+    </footer>
+
+    <script>
+        const DEFAULT_SUBJECTS = [
+            { id: 1, name: 'Алгебра', q1: 82, q2: 90, q3: null, q4: null },
+            { id: 2, name: 'Геометрия', q1: 88, q2: 90, q3: null, q4: null },
+            { id: 3, name: 'Физика', q1: 86, q2: 88, q3: null, q4: null },
+            { id: 4, name: 'Информатика', q1: 75, q2: 88, q3: null, q4: null },
+            { id: 5, name: 'Английский язык', q1: 47, q2: 85, q3: null, q4: null },
+            { id: 6, name: 'Химия', q1: 75, q2: 92, q3: null, q4: null },
+            { id: 7, name: 'Биология', q1: 65, q2: 78, q3: null, q4: null },
+            { id: 8, name: 'История Узбекистана', q1: 69, q2: 82, q3: null, q4: null },
+            { id: 9, name: 'Всемирная история', q1: 72, q2: 80, q3: null, q4: null },
+            { id: 10, name: 'География', q1: 77, q2: 85, q3: null, q4: null },
+            { id: 11, name: 'Русский язык', q1: 65, q2: 90, q3: null, q4: null },
+            { id: 12, name: 'Литература', q1: 64, q2: 86, q3: null, q4: null },
+            { id: 13, name: 'Узбекский язык', q1: 67, q2: 88, q3: null, q4: null },
+            { id: 14, name: 'Физкультура', q1: 95, q2: 95, q3: null, q4: null }
+        ];
+
+        const ACCOUNTS_KEY = 'uai_accounts_v1';
+        const ACTIVE_USER_KEY = 'uai_active_user_v1';
+        const GUEST_SUBJECTS_KEY = 'uai_guest_subjects_v1';
+
+        let currentUser = null;
+        let subjects = [];
+        let toastTimer = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreSession();
+            renderAll();
+            updateSimulator();
+        });
+
+        function getAccounts() {
+            try {
+                const raw = localStorage.getItem(ACCOUNTS_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveAccounts(list) {
+            localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list));
+        }
+
+        function showAuthAlert(message, isError = true) {
+            const box = document.getElementById('auth-alert');
+            box.textContent = message;
+            box.classList.remove('hidden', 'bg-rose-500/15', 'text-rose-300', 'border-rose-500/30', 'bg-emerald-500/15', 'text-emerald-300', 'border-emerald-500/30');
+            if (isError) {
+                box.classList.add('bg-rose-500/15', 'text-rose-300', 'border-rose-500/30');
+            } else {
+                box.classList.add('bg-emerald-500/15', 'text-emerald-300', 'border-emerald-500/30');
+            }
+        }
+
+        function hideAuthAlert() {
+            document.getElementById('auth-alert').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            hideAuthAlert();
+            const regTab = document.getElementById('tab-register');
+            const logTab = document.getElementById('tab-login');
+            const regForm = document.getElementById('register-form');
+            const logForm = document.getElementById('login-form');
+
+            if (tab === 'register') {
+                regTab.className = 'py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition';
+                logTab.className = 'py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition';
+                regForm.classList.remove('hidden');
+                logForm.classList.add('hidden');
+            } else {
+                logTab.className = 'py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition';
+                regTab.className = 'py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition';
+                logForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            hideAuthAlert();
+
+            const name = document.getElementById('reg-name').value.trim();
+            const login = document.getElementById('reg-login').value.trim().toLowerCase();
+            const grade = document.getElementById('reg-grade').value.trim();
+            const goal = document.getElementById('reg-goal').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const passwordConfirm = document.getElementById('reg-password-confirm').value;
+
+            if (!name || !login || !password) {
+                showAuthAlert('Заполни обязательные поля: имя, логин и пароль.');
+                return;
+            }
+            if (password.length < 4) {
+                showAuthAlert('Пароль должен содержать минимум 4 символа.');
+                return;
+            }
+            if (password !== passwordConfirm) {
+                showAuthAlert('Пароли не совпадают. Проверь ввод.');
+                return;
+            }
+
+            const accounts = getAccounts();
+            if (accounts.some(acc => acc.login === login)) {
+                showAuthAlert('Такой логин уже занят. Попробуй другой или войди в существующий аккаунт.');
+                return;
+            }
+
+            const newAccount = {
+                id: 'acc_' + Date.now(),
+                name,
+                login,
+                grade,
+                goal,
+                password,
+                subjects: DEFAULT_SUBJECTS.map(s => ({ ...s }))
+            };
+
+            accounts.push(newAccount);
+            saveAccounts(accounts);
+            activateAccount(newAccount);
+            event.target.reset();
+            showToast(`Аккаунт ${name} создан!`);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            hideAuthAlert();
+
+            const identifier = document.getElementById('login-identifier').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            const accounts = getAccounts();
+            const found = accounts.find(acc => acc.login === identifier && acc.password === password);
+
+            if (!found) {
+                showAuthAlert('Неверный логин или пароль.');
+                return;
+            }
+
+            activateAccount(found);
+            event.target.reset();
+            showToast(`С возвращением, ${found.name}!`);
+        }
+
+        function continueAsGuest() {
+            currentUser = {
+                id: 'guest',
+                name: 'Гость',
+                login: 'guest',
+                grade: '',
+                goal: ''
+            };
+            localStorage.setItem(ACTIVE_USER_KEY, 'guest');
+            loadSubjectsForCurrentUser();
+            updateHeaderProfileBadge();
+            hideAuthScreen();
+            renderAll();
+            showToast('Вход выполнен в гостевом режиме');
+        }
+
+        function activateAccount(account) {
+            currentUser = {
+                id: account.id,
+                name: account.name,
+                login: account.login,
+                grade: account.grade || '',
+                goal: account.goal || ''
+            };
+            localStorage.setItem(ACTIVE_USER_KEY, account.id);
+            loadSubjectsForCurrentUser();
+            updateHeaderProfileBadge();
+            hideAuthScreen();
+            renderAll();
+        }
+
+        function restoreSession() {
+            const activeId = localStorage.getItem(ACTIVE_USER_KEY);
+            if (!activeId) {
+                loadSubjectsForCurrentUser();
+                return;
+            }
+            if (activeId === 'guest') {
+                currentUser = { id: 'guest', name: 'Гость', login: 'guest', grade: '', goal: '' };
+                loadSubjectsForCurrentUser();
+                updateHeaderProfileBadge();
+                document.getElementById('auth-screen').classList.add('hidden');
+                return;
+            }
+            const accounts = getAccounts();
+            const found = accounts.find(acc => acc.id === activeId);
+            if (found) {
+                currentUser = {
+                    id: found.id,
+                    name: found.name,
+                    login: found.login,
+                    grade: found.grade || '',
+                    goal: found.goal || ''
+                };
+                loadSubjectsForCurrentUser();
+                updateHeaderProfileBadge();
+                document.getElementById('auth-screen').classList.add('hidden');
+            } else {
+                loadSubjectsForCurrentUser();
+            }
+        }
+
+        function hideAuthScreen() {
+            const screen = document.getElementById('auth-screen');
+            screen.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            setTimeout(() => {
+                screen.classList.add('hidden');
+            }, 280);
+        }
+
+        function openAuthModal() {
+            hideAuthAlert();
+            const screen = document.getElementById('auth-screen');
+            screen.classList.remove('hidden', 'opacity-0', 'scale-95', 'pointer-events-none');
+        }
+
+        function logoutUser() {
+            localStorage.removeItem(ACTIVE_USER_KEY);
+            currentUser = null;
+            updateHeaderProfileBadge();
+            switchAuthTab('login');
+            openAuthModal();
+            showToast('Вы вышли из аккаунта');
+        }
+
+        function updateHeaderProfileBadge() {
+            const badge = document.getElementById('header-profile-badge');
+            if (!currentUser) {
+                badge.classList.add('hidden');
+                return;
+            }
+            const parts = [currentUser.name, currentUser.grade, currentUser.goal].filter(Boolean);
+            badge.textContent = parts.join(' • ');
+            badge.classList.remove('hidden');
+        }
+
+        function loadSubjectsForCurrentUser() {
+            try {
+                if (!currentUser || currentUser.id === 'guest') {
+                    const rawGuest = localStorage.getItem(GUEST_SUBJECTS_KEY);
+                    if (rawGuest) {
+                        const parsed = JSON.parse(rawGuest);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            subjects = parsed;
+                            return;
+                        }
+                    }
+                    subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+                    return;
+                }
+
+                const accounts = getAccounts();
+                const acc = accounts.find(a => a.id === currentUser.id);
+                if (acc && Array.isArray(acc.subjects) && acc.subjects.length > 0) {
+                    subjects = acc.subjects.map(s => ({ ...s }));
+                } else {
+                    subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+                }
+            } catch (e) {
+                subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+            }
+        }
+
+        function saveSubjects(notify = false) {
+            try {
+                if (!currentUser || currentUser.id === 'guest') {
+                    localStorage.setItem(GUEST_SUBJECTS_KEY, JSON.stringify(subjects));
+                } else {
+                    const accounts = getAccounts();
+                    const idx = accounts.findIndex(a => a.id === currentUser.id);
+                    if (idx !== -1) {
+                        accounts[idx].subjects = subjects.map(s => ({ ...s }));
+                        saveAccounts(accounts);
+                    }
+                }
+                if (notify) showToast('Изменения сохранены в UAI');
+            } catch (e) {
+                if (notify) showToast('Не удалось сохранить данные', true);
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+            msg.textContent = message;
+            icon.textContent = isError ? '!' : '✓';
+            icon.className = isError ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function manualSave() {
+            saveSubjects(true);
+        }
+
+        function openConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmReset() {
+            subjects = DEFAULT_SUBJECTS.map(s => ({ ...s }));
+            saveSubjects(false);
+            renderAll();
+            closeConfirmModal();
+            showToast('Сброшено к стандартному списку предметов');
+        }
+
+        function addSubject() {
+            const nextId = subjects.length > 0 ? Math.max(...subjects.map(s => s.id)) + 1 : 1;
+            subjects.push({
+                id: nextId,
+                name: 'Новый предмет',
+                q1: null,
+                q2: null,
+                q3: null,
+                q4: null
+            });
+            saveSubjects(false);
+            renderAll();
+            showToast('Предмет добавлен');
+        }
+
+        function deleteSubject(id) {
+            if (subjects.length <= 1) {
+                showToast('Должен остаться хотя бы один предмет', true);
+                return;
+            }
+            subjects = subjects.filter(s => s.id !== id);
+            saveSubjects(false);
+            renderAll();
+            showToast('Предмет удалён');
+        }
+
+        function updateSubjectName(id, value) {
+            const subj = subjects.find(s => s.id === id);
+            if (!subj) return;
+            subj.name = value;
+            saveSubjects(false);
+            renderChart();
+        }
+
+        function updateQuarterScore(id, quarterKey, rawValue) {
+            const subj = subjects.find(s => s.id === id);
+            if (!subj) return;
+
+            if (rawValue === '' || rawValue === null) {
+                subj[quarterKey] = null;
+            } else {
+                let num = Number(rawValue);
+                if (Number.isNaN(num)) {
+                    subj[quarterKey] = null;
+                } else {
+                    num = Math.max(0, Math.min(100, Math.round(num * 10) / 10));
+                    subj[quarterKey] = num;
+                }
+            }
+            saveSubjects(false);
+            renderAll();
+        }
+
+        function getSubjectStats(subj) {
+            const quarters = [subj.q1, subj.q2, subj.q3, subj.q4];
+            const filled = quarters.filter(v => typeof v === 'number' && !Number.isNaN(v));
+            const emptyCount = 4 - filled.length;
+            const sumFilled = filled.reduce((acc, v) => acc + v, 0);
+            const forecast100 = filled.length > 0 ? sumFilled / filled.length : 0;
+
+            let uzGrade = 2;
+            let gpa4 = 0.0;
+            let letter = 'F';
+
+            if (filled.length === 0) {
+                uzGrade = 0;
+                gpa4 = 0.0;
+                letter = '—';
+            } else if (forecast100 >= 86) {
+                uzGrade = 5;
+                gpa4 = 4.0;
+                letter = 'A';
+            } else if (forecast100 >= 66) {
+                uzGrade = 4;
+                gpa4 = 3.0;
+                letter = 'B';
+            } else if (forecast100 >= 50) {
+                uzGrade = 3;
+                gpa4 = 2.0;
+                letter = 'C';
+            } else {
+                uzGrade = 2;
+                gpa4 = 1.0;
+                letter = 'D';
+            }
+
+            let advisorText = '—';
+            let advisorTone = 'text-slate-400';
+
+            if (filled.length === 0) {
+                advisorText = 'Нужно в среднем 86+ за четверть';
+                advisorTone = 'text-slate-400';
+            } else if (emptyCount === 0) {
+                if (forecast100 >= 86) {
+                    advisorText = 'Отлично! Годовая «5» достигнута';
+                    advisorTone = 'text-emerald-400';
+                } else {
+                    advisorText = 'Год завершён, порог 86 не взят';
+                    advisorTone = 'text-amber-400';
+                }
+            } else {
+                const neededTotal = 86 * 4 - sumFilled;
+                const neededPerRemaining = neededTotal / emptyCount;
+
+                if (neededPerRemaining <= 0) {
+                    advisorText = '«5» уже гарантирована!';
+                    advisorTone = 'text-emerald-400';
+                } else if (neededPerRemaining <= 100) {
+                    const roundedNeeded = Math.ceil(neededPerRemaining * 10) / 10;
+                    advisorText = `Нужно по ${roundedNeeded} в ост. (${emptyCount} чтв)`;
+                    advisorTone = roundedNeeded > 92 ? 'text-amber-400' : 'text-teal-300';
+                } else {
+                    advisorText = 'Порог 86 уже недостижим';
+                    advisorTone = 'text-rose-400';
+                }
+            }
+
+            return {
+                filledCount: filled.length,
+                forecast100,
+                uzGrade,
+                gpa4,
+                letter,
+                advisorText,
+                advisorTone
+            };
+        }
+
+        function renderAll() {
+            renderTable();
+            renderSummary();
+            renderChart();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('subjects-tbody');
+            tbody.innerHTML = '';
+
+            subjects.forEach(subj => {
+                const st = getSubjectStats(subj);
+                const forecastDisplay = st.filledCount > 0 ? st.forecast100.toFixed(1) : '—';
+
+                let scoreColor = 'text-slate-400';
+                if (st.filledCount > 0) {
+                    if (st.forecast100 >= 86) scoreColor = 'text-emerald-400';
+                    else if (st.forecast100 >= 66) scoreColor = 'text-amber-400';
+                    else scoreColor = 'text-rose-400';
+                }
+
+                const badgeText = st.filledCount > 0
+                    ? `${st.uzGrade} (${st.letter}) • ${st.gpa4.toFixed(1)}`
+                    : '—';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition';
+                tr.innerHTML = `
+                    <td class="py-2.5 px-4">
+                        <input type="text" value="${escapeHtml(subj.name)}"
+                            onchange="updateSubjectName(${subj.id}, this.value)"
+                            class="w-full bg-slate-900/70 hover:bg-slate-900 focus:bg-slate-950 border border-transparent focus:border-emerald-500/60 rounded-lg px-2.5 py-1.5 text-sm font-medium text-white focus:outline-none transition">
+                    </td>
+                    ${['q1', 'q2', 'q3', 'q4'].map(qKey => `
+                        <td class="py-2.5 px-2 text-center">
+                            <input type="number" min="0" max="100" step="1"
+                                value="${subj[qKey] !== null && subj[qKey] !== undefined ? subj[qKey] : ''}"
+                                placeholder="—"
+                                onchange="updateQuarterScore(${subj.id}, '${qKey}', this.value)"
+                                class="w-16 text-center bg-slate-900/80 border border-slate-700/70 focus:border-emerald-500 rounded-lg py-1.5 text-sm text-white placeholder-slate-600 focus:outline-none transition">
+                        </td>
+                    `).join('')}
+                    <td class="py-2.5 px-3 text-center font-bold ${scoreColor}">
+                        ${forecastDisplay}
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                        <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800/90 border border-slate-700/70 text-slate-200">
+                            ${badgeText}
+                        </span>
+                    </td>
+                    <td class="py-2.5 px-4 text-xs font-medium ${st.advisorTone}">
+                        ${st.advisorText}
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                        <button onclick="deleteSubject(${subj.id})" title="Удалить предмет"
+                            class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition">
+                            ✕
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderSummary() {
+            const activeStats = subjects
+                .map(s => getSubjectStats(s))
+                .filter(st => st.filledCount > 0);
+
+            const count5 = activeStats.filter(st => st.uzGrade === 5).length;
+            const count4 = activeStats.filter(st => st.uzGrade === 4).length;
+            const count3 = activeStats.filter(st => st.uzGrade > 0 && st.uzGrade <= 3).length;
+
+            document.getElementById('count-5').textContent = count5;
+            document.getElementById('count-4').textContent = count4;
+            document.getElementById('count-3').textContent = count3;
+
+            if (activeStats.length === 0) {
+                document.getElementById('overall-gpa').textContent = '0.00';
+                document.getElementById('overall-avg-100').textContent = '0.0';
+                document.getElementById('avg-progress-bar').style.width = '0%';
+                return;
+            }
+
+            const avgGpa = activeStats.reduce((acc, st) => acc + st.gpa4, 0) / activeStats.length;
+            const avg100 = activeStats.reduce((acc, st) => acc + st.forecast100, 0) / activeStats.length;
+
+            const gpaEl = document.getElementById('overall-gpa');
+            gpaEl.textContent = avgGpa.toFixed(2);
+            gpaEl.className = 'text-4xl font-extrabold ' + (
+                avgGpa >= 3.85 ? 'text-emerald-400' :
+                avgGpa >= 3.3 ? 'text-teal-300' :
+                avgGpa >= 2.5 ? 'text-amber-400' : 'text-rose-400'
+            );
+
+            const badge = document.getElementById('gpa-status-badge');
+            if (avgGpa >= 3.85) {
+                badge.textContent = 'Ivy / MIT Tier';
+                badge.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25';
+            } else if (avgGpa >= 3.3) {
+                badge.textContent = 'Strong';
+                badge.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-teal-500/15 text-teal-300 border border-teal-500/25';
+            } else {
+                badge.textContent = 'Needs Boost';
+                badge.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25';
+            }
+
+            document.getElementById('overall-avg-100').textContent = avg100.toFixed(1);
+            document.getElementById('avg-progress-bar').style.width = `${Math.min(100, Math.max(0, avg100))}%`;
+        }
+
+        function renderChart() {
+            const container = document.getElementById('visual-chart');
+            container.innerHTML = '';
+
+            subjects.forEach(subj => {
+                const st = getSubjectStats(subj);
+                const val = st.filledCount > 0 ? st.forecast100 : 0;
+                const widthPct = Math.min(100, Math.max(0, val));
+
+                let barColor = 'bg-slate-700';
+                if (st.filledCount > 0) {
+                    if (val >= 86) barColor = 'bg-emerald-500';
+                    else if (val >= 66) barColor = 'bg-amber-400';
+                    else barColor = 'bg-rose-500';
+                }
+
+                const row = document.createElement('div');
+                row.className = 'grid grid-cols-12 items-center gap-3 text-xs';
+                row.innerHTML = `
+                    <div class="col-span-4 sm:col-span-3 truncate text-slate-300 font-medium" title="${escapeHtml(subj.name)}">
+                        ${escapeHtml(subj.name)}
+                    </div>
+                    <div class="col-span-6 sm:col-span-8 relative h-5 bg-slate-900/90 rounded-lg overflow-hidden border border-slate-800">
+                        <div class="${barColor} h-full rounded-lg transition-all duration-300" style="width: ${widthPct}%"></div>
+                        <div class="absolute top-0 bottom-0 border-r-2 border-dashed border-emerald-300/70" style="left: 86%" title="Порог 86"></div>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1 text-right font-bold text-slate-200">
+                        ${st.filledCount > 0 ? val.toFixed(1) : '—'}
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function toggleSimulator() {
+            const panel = document.getElementById('simulator-panel');
+            const chevron = document.getElementById('sim-chevron');
+            panel.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function updateSimulator() {
+            const formative = parseFloat(document.getElementById('sim-formative').value) || 0;
+            const bsb = parseFloat(document.getElementById('sim-bsb').value) || 0;
+            const chsb = parseFloat(document.getElementById('sim-chsb').value) || 0;
+
+            document.getElementById('sim-formative-val').textContent = `${formative.toFixed(1)} / 10`;
+            document.getElementById('sim-bsb-val').textContent = `${bsb} / 50`;
+            document.getElementById('sim-chsb-val').textContent = `${chsb} / 40`;
+
+            const total = Math.min(100, formative + bsb + chsb);
+            const totalEl = document.getElementById('sim-total-score');
+            const badgeEl = document.getElementById('sim-grade-badge');
+
+            totalEl.textContent = total.toFixed(1);
+
+            if (total >= 86) {
+                totalEl.className = 'text-3xl font-extrabold text-emerald-400';
+                badgeEl.textContent = 'Оценка: 5 (A • 4.0)';
+                badgeEl.className = 'px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25';
+            } else if (total >= 66) {
+                totalEl.className = 'text-3xl font-extrabold text-amber-400';
+                badgeEl.textContent = 'Оценка: 4 (B • 3.0)';
+                badgeEl.className = 'px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25';
+            } else {
+                totalEl.className = 'text-3xl font-extrabold text-rose-400';
+                badgeEl.textContent = 'Ниже порога «4»';
+                badgeEl.className = 'px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/25';
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
